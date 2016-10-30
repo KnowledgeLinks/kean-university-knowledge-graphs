@@ -1,0 +1,59 @@
+@prefix bf: <http://id.loc.gov/ontologies/bibframe/> .
+@prefix edu: <http://knowledgelinks.io/ns/edu/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.kean.edu/> a bf:Organization,
+        schema:CollegeOrUniversity ;
+    rdfs:label "Kean University"@en ;
+    schema:address [ a schema:PostalAddress ;
+            schema:addressCountry "US"@en ;
+            schema:addressLocality "Union"@en ;
+            schema:postalCode "07083" ;
+            schema:streetAddress "1000 Morris Avenue"@en ] ;
+    schema:subOrganization <http://www.kean.edu/academics/college-business-public-management/> ,
+       <http://www.kean.edu/academics/college-humanities-and-social-sciences/>,
+       <http://www.kean.edu/academics/college-natural-applied-health-sciences/> .
+
+
+
+ 
+<http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/biology> a schema:CollegeDepartment ;
+    rdfs:label "Biology"@en .
+
+<http://www.kean.edu/academics/college-business-public-management/> a schema:Organization ;
+    rdfs:label "College of Business and Management"@en ;
+    schema:subOrganization  <http://www.kean.edu/academics/college-business-public-management/school-management-marketing/> .
+
+<http://www.kean.edu/academics/college-humanities-and-social-sciences/> a schema:Organization ;
+    rdfs:label "College of Humanities and Social Sciences"@en ;
+    schema:subOrganization <http://www.kean.edu/academics/college-humanities-and-social-sciences/school-general-studies/> .
+
+<http://www.kean.edu/academics/college-natural-applied-health-sciences/> a schema:Organization ;
+    rdfs:label "College of Natural and Applied Health Science"@en ;
+    schema:subOrganization <http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/> .
+
+<http://www.kean.edu/academics/college-business-public-management/school-management-marketing/management/> a schema:CollegeDepartment ;
+    rdfs:label "Management"@en .
+
+<http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/chemistry/> a schema:CollegeDepartment ;
+    rdfs:label "Department of Chemistry"@en .
+
+<http://www.kean.edu/academics/college-humanities-and-social-sciences/school-general-studies/research-and-philosophy/> a schema:CollegeDepartment ;
+    rdfs:label "Philosophy and Religion"@en .
+
+<http://www.kean.edu/academics/college-business-public-management/school-management-marketing/> a schema:Organization;
+    rdfs:label "School of Management and Marketing"en ;
+    schema:subOrganization <http://www.kean.edu/academics/college-business-public-management/school-management-marketing/management/> .
+
+<http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/> a schema:Organization;
+    rdfs:label "School of Natural Sciences"@en ;
+    schema:subOrganization <http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/biology/>,
+      <http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/chemistry/> .  
+
+<http://www.kean.edu/academics/college-humanities-and-social-sciences/school-general-studies/> a schema:Organization;
+    rdfs:label "School of General Studies"@en ;
+    schema:subOrganization <http://www.kean.edu/academics/college-humanities-and-social-sciences/school-general-studies/research-and-philosophy/> .

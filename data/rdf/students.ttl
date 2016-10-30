@@ -7,18 +7,26 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://www.kean.edu/1111> a schema:Person ;
+    edu:major [ schema:CollegeDepartment <http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/chemistry> ;
+        edu:terms <http://www.kean.edu/offices/registrar/academic-calendar/fall-2016> ] ;
     schema:familyName "Public"@en ;
     schema:givenName "Jane"@en .
 
 <http://www.kean.edu/2222> a schema:Person ;
+    edu:major [ schema:CollegeDepartment <http://www.kean.edu/academics/college-humanities-and-social-sciences/school-general-studies/research-and-philosophy> ;
+        edu:terms <http://www.kean.edu/offices/registrar/academic-calendar/fall-2016> ] ;
     schema:familyName "Public"@en ;
     schema:givenName "John"@en .
 
 <http://www.kean.edu/3333> a schema:Person ;
+    edu:major [ schema:CollegeDepartment <http://www.kean.edu/academics/college-business-public-management/school-management-marketing/biology/> ;
+         edu:terms <http://www.kean.edu/offices/registrar/academic-calendar/fall-2016> ] ;
     schema:familyName "Hardy"@en ;
     schema:givenName "Frank"@en .
 
 <http://www.kean.edu/4444> a schema:Person ;
+    edu:major [ schema:CollegeDepartment <http://www.kean.edu/academics/college-business-public-management/school-management-marketing/management/> ;
+         edu:terms <http://www.kean.edu/offices/registrar/academic-calendar/fall-2016> ] ;
     schema:familyName "Drew"@en ;
     schema:givenName "Nancy"@en .
 

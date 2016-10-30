@@ -1,0 +1,14 @@
+@prefix bf: <http://id.loc.gov/ontologies/bibframe/> .
+@prefix edu: <http://knowledgelinks.io/ns/edu/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.kean.edu/offices/registrar/academic-calendar/fall-2016> a schema:EducationalEvent ;
+    rdfs:label "Fall Semester 2016"@en ;
+    schema:endDate "2016-12-21T12:00:00" ;
+    schema:organizer <http://www.kean.edu/> ;
+    schema:startDate "2016-09-01" .
+
