@@ -1,0 +1,29 @@
+@prefix bf: <http://id.loc.gov/ontologies/bibframe/> .
+@prefix kds: <http://knowledgelinks.io/ns/data-structures/> .
+@prefix kdr: <http://knowledgelinks.io/ns/data-resources/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix relators: <http://id.loc.gov/vocabulary/relators/> .
+@prefix bc: <http://knowledgelinks.io/ns/bibcat/> .
+@prefix m21: <http://knowledgelinks.io/ns/marc21/> .
+@prefix schema: <http://schema.org/> .
+@prefix loc: <http://id.loc.gov/authorities/> .
+
+bc:bf-heldby a kds:PropertyLinker;
+    kds:destPropUri [ bf:heldBy <http://www.kean.edu/> ] ;
+    kds:destClassUri bf:Item .
+
+bc:m21-bf_LocalShelfMark a kds:OrderedPropertyLinker;
+    kds:srcPropUri m21:M090__ab;
+    kds:destPropUri rdf:value ;
+    kds:destPropClass bf:ShelfMarkLcc ;
+    kds:linkedRange bf:shelfMark ;
+    kds:linkedClass bf:Item .
+
+bc:bf-ItemIRITemplate a kds:IRIPattern ;
+    kds:srcPropUri m21:M001 ;
+    kds:srcPropRegex "(.+)" ;
+    kds:destClassUri bf:Item ;
+    kds:iriPattern "http://library.kean.edu/cgi-bin/Pwebrecon.cgi?BBID={0}" .
