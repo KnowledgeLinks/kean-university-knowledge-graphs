@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Kean Mobile Concierge</title>
+	<meta charset="utf-8" />
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <link href="Content/style.css" rel="stylesheet" />
+    <link href="Content/jquery.mobile-1.4.5.min.css" rel="stylesheet" />
+    <script src="Scripts/jquery.min.js"></script>
+    <script src="Scripts/jquery-ui.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="Scripts/jquery.touchpunch.js"></script>
+    <script src="http://cdn.jsdelivr.net/interact.js/1.2.6/interact.min.js"></script>
+    <script src="Scripts/kean.js"></script>
+</head>
+<body>
+    <div class="menuOpenContainer"></div>
+    <div data-role="page" id="home" class="page">
+        <div class="headerContainer">
+            <a href="#panel" class="">☰</a>
+            <h1>Kean Academic Concierge</h1>
+            <div class="clearfloat"></div>
+        </div>
+        <div class="contentContainer">
+            <div class="notification">
+                <div class="closeButton"></div>
+                <p><strong>D'Angola Gym</strong></p>
+                <p>Where've you been? Stop in to see our new equipment and get back on your workout schedule.</p>
+            </div>
+
+
+            <div class="pageBlock rooms">
+                <a href="#rooms" class="header">
+                    <h2>Room reserverations</h2>
+                </a>
+                <div class="content">
+                    <a class="item" href="#rooms">
+                        <div class="icon add"></div>
+                        <div class="text">
+                            <strong>Make a new reservation</strong>
+                        </div>
+                        <div class="clearfloat"></div>
+                    </a>
+                    <a class="item" href="#">
+                        <div class="image">
+                            <div style="background-image: url('content/images/reservation.jpg');"></div>
+                        </div>
+                        <div class="text">
+                            You have a reservation for: <br />
+                            <strong>Room 2.21 from 2pm-3pm</strong>
+                            <div class="clearfloat"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="pageBlock catalogue">
+                <a href="#cataloguesearch" class="header">
+                    <h2>Catalogue</h2>
+                </a>
+                <div class="content">
+                    <form id="search" data-ajax="false">
+                        <input type="text" class="search" data-role="none" placeholder="Search" />
+                    </form>
+                    <p>
+                        <br />
+                        <span>New interesting titles arrived this week!</span>
+                        <br />
+                        <br />
+                        <div class="catalogueItemContainer">
+                            <div class="items"></div>
+                        </div>
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="pageBlock news">
+                <a href="#news" class="header">
+                    <h2>Library News</h2>
+                </a>
+                <div class="content">
+                    <div class="item">
+                        <div class="date">
+                            10/4
+                        </div>
+                        <div class="text">
+                            Kean University awarded $375k Math and Science Partnership Grant by the NJDOE
+                        </div>
+                        <div class="clearfloat"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pageBlock guides">
+                <a href="#guides" class="header">
+                    <h2>Research Guides</h2>
+                </a>
+                <div class="content">
+                    <span>
+                        Research assistance, subject guides and useful resources compiled by your friendly librarians. Know what we know - find it in Research Guides!
+                    </span>
+                    <div class="guideContainer">
+                        <span data-id="3">Architectural</span>
+                        <span data-id="21">Design</span>
+                        <span data-id="53">Political Science</span>
+                        <span data-id="65">Technology</span>
+                        <span data-id="39">Mathematics</span>
+                        <span data-id="22">Education</span>
+                    </div>
+                    <a class="item" href="#guides">
+                        <div class="icon"></div>
+                        <div class="text">
+                            <strong>Browse all guides</strong>
+                        </div>
+                        <div class="clearfloat"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-role="page" id="rooms" class="rooms">
+        <div class="headerContainer">
+            <a href="javascript:window.history.back();" class="back"></a>
+            <h1>Room Reservations</h1>
+            <div class="clearfloat"></div>
+        </div>
+
+        <div class="contentContainer">
+            <div class="content backgroundContainer">
+                <a class="item" href="#">
+                    <div class="text">
+                        You have a reservation for: <br />
+                        <strong>Room 2.21 from 2pm-3pm</strong>
+                        <div class="clearfloat"></div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="reservationContainer">
+                <span>Make a new reservation</span>
+                <div class="reservationPicker">
+                    <div class="reservationDate">
+                        <span class="button today">Today</span>
+                        <span class="button later">Later</span>
+                        <div class="clearfloat"></div>
+                    </div>
+                    <div class="reservationGroup">
+                        <span class="button">1</span>
+                        <span class="button">2</span>
+                        <span class="button">4</span>
+                        <span class="button">8</span>
+                        <span class="button">10</span>
+                        <div class="clearfloat"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="roomContainer">
+                <div class="optionsContainer">
+                    <p>Available Rooms</p>
+                </div>
+                <div class="tabContainer">
+                    <div class="tab selected">Map</div>
+                    <div class="tab">Near me</div>
+                </div>
+                <div class="mapContainer">
+                    <div class="map">
+                        <img src="Content/Images/campus_map.jpg" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-role="page" id="cataloguesearch" class="catalogue">
+        <div class="headerContainer">
+            <a href="javascript:window.history.back();" class="back"></a>
+            <h1>Catalogue search</h1>
+            <div class="clearfloat"></div>
+        </div>
+        <div class="contentContainer">
+            <form id="searchpage" data-ajax="false;">
+                <input type="text" class="search" data-role="none" placeholder="Search" />
+            </form>
+            <div class="resultContainer">
+            </div>
+        </div>
+
+    </div>
+
+    <div data-role="page" id="cataloguedetail" class="catalogue">
+        <div class="headerContainer">
+            <a href="javascript:window.history.back();" class="back"></a>
+            <h1></h1>
+            <div class="clearfloat"></div>
+        </div>
+        <div class="contentContainer">
+        </div>
+    </div>
+
+    <div data-role="page" id="news" class="news">
+        <div class="headerContainer">
+            <a href="javascript:window.history.back();" class="back"></a>
+            <h1>News</h1>
+            <div class="clearfloat"></div>
+        </div>
+    </div>
+
+    <div data-role="page" id="guides" class="guides">
+        <div class="headerContainer">
+            <a href="javascript:window.history.back();" class="back"></a>
+            <h1>Research Guides</h1>
+            <div class="clearfloat"></div>
+        </div>
+        <div class="contentContainer">
+            <form id="searchguide" data-ajax="false">
+                <input type="text" class="search" data-role="none" placeholder="Search" />
+            </form>
+
+            <div class="guideContainer">
+            </div>
+        </div>
+    </div>
+    <div data-role="page" id="guidedetail" class="guides">
+        <div class="headerContainer">
+            <a href="javascript:window.history.back();" class="back"></a>
+            <h1>Research Guides</h1>
+            <div class="clearfloat"></div>
+        </div>
+        <div class="contentContainer">
+        </div>
+    </div>
+
+    <div data-role="page" id="notifications" class="notifications">
+        <div class="headerContainer">
+            <a href="javascript:window.history.back();" class="back"></a>
+            <h1>Notifications</h1>
+            <div class="clearfloat"></div>
+        </div>
+        <div class="contentContainer">
+            <div class="notification">
+                <div class="closeButton"></div>
+                <p><strong>D'Angola Gym</strong></p>
+                <p>Where've you been? Stop in to see our new equipment and get back on your workout schedule.</p>
+            </div>
+
+            <div class="notification">
+                <div class="closeButton"></div>
+                <p><strong>3D printing complex protein models</strong></p>
+                <p>New resources available for Chemistry students. Take a look here at how it can help.</p>
+            </div>
+        </div>
+    </div>
+    <div data-role="panel" id="panel" data-position="left" data-position-fixed="true" data-display="push">
+        <div class="headerContainer">
+            <a href="#panel" class="">☰</a>
+            <h1>Kean Academic Concierge</h1>
+            <div class="clearfloat"></div>
+        </div>
+        <div class="loginContainer">
+            <div class="userContainer">
+                <span>Please sign in using your Student ID:</span>
+            </div>
+            <div class="loginForm">
+                <input type="text" placeholder="username" />
+                <input type="password" placeholder="password" />
+                <span class="button signin">Sign In</span>
+                <div class="clearfloat"></div>
+            </div>
+        </div>
+        <div class="userContentContainer">
+            <div class="userContainer">
+                <p><strong>Username</strong></p>
+                <p>Computer Information</p>
+                <p></p>
+                <a href="#" class="signout">Sign out</a>
+                <div class="clearfloat"></div>
+            </div>
+            <div class="customizeContainer">
+                <span>Customize KEAN library app</span>
+                <ul class="sortContainer">
+                    <li style="background-color: #CFFF5E;">Room reservations</li>
+                    <li style="background-color: #1B75BA;">Library News</li>
+                    <li style="background-color: #D91C5C;">Catalogue</li>
+                    <li style="background-color: #252160;">Research Guides</li>
+                </ul>
+            </div>
+            <a class="notificationLink" href="#notifications">Notifications</a>
+        </div>
+        <div class="infoContainer">
+            <a href="#" class="website">Go to Kean University website</a>
+            <a href="#" class="info">About Kean Library App</a>
+        </div>
+    </div>
+</body>
+</html>

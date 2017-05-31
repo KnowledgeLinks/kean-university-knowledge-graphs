@@ -46,7 +46,7 @@
     rdfs:label "Philosophy and Religion"@en .
 
 <http://www.kean.edu/academics/college-business-public-management/school-management-marketing/> a schema:Organization;
-    rdfs:label "School of Management and Marketing"en ;
+    rdfs:label "School of Management and Marketing"@en ;
     schema:subOrganization <http://www.kean.edu/academics/college-business-public-management/school-management-marketing/management/> .
 
 <http://www.kean.edu/academics/college-natural-applied-health-sciences/school-natural-sciences/> a schema:Organization;
