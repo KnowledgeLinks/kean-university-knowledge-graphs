@@ -23,7 +23,6 @@ def login():
         error_response.status_code = 500
         return error_response
     check_user = ldap_manager.authenticate(username, password)
-    print(check_user, check_user.status)
     if check_user.status is True:
         login_user(Student(username=username, password=password))
         return jsonify({"message": "Logged in".format(username)})
