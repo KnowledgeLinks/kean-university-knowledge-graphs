@@ -3,7 +3,9 @@ version: "2.0"
 services:
 
   bibcat:
-    build: .
+    build: 
+      context: ./
+      dockerfile: ./bin/containers/Dockerfile
     ports:
       - 5000
     volumes:
