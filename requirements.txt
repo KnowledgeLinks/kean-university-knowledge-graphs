@@ -1,3 +1,4 @@
 Flask
 bibcat
 ldap3
+jwt
