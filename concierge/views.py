@@ -1,15 +1,12 @@
 __author__ = "Jeremy Nelson"
 
+import jwt
 from . import app
 from flask import abort, jsonify
 from flask import current_app, request, session
-from flask_login import login_required, login_user, logout_user, current_user
-from flask_ldap3_login import LDAP3LoginManager
+from ldap3 import Server, Connection, ALL
 
-from .patrons import Student, Staff, Faculty
-
-ldap_manager = LDAP3LoginManager()
-ldap_manager.init_config(app.config)
+server = Server(app.config.LDAP_HOST, get_info=ALL, use_ssl=True)
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -22,10 +19,23 @@ def login():
              "message": "username or password cannot be blank"})
         error_response.status_code = 500
         return error_response
-    check_user = ldap_manager.authenticate(username, password)
-    if check_user.status is True:
-        login_user(Student(username=username, password=password))
-        return jsonify({"message": "Logged in".format(username)})
+    conn = Connection(server, 
+                      app.config.LDAP_STUDENT_DN.format(username),
+                      password=password)
+    # Try to authenticate with credentials as a student
+    if conn.bind() is False:
+        # Trys to authenticate as staff
+        conn = Connection(server, 
+                      app.config.LDAP_STAFF_DN.format(username),
+                      password=password)
+    if conn.bind() is True:
+        token = jwt.encode({"username": username, 
+                            "password": password},
+                           app.config.SECRET_KEY,
+                           algorithm='HS256')
+        session['token'] = token
+        return jsonify({"message": "Logged in".format(username),
+                        "token": token})
     else:
         failed_authenticate = jsonify({
             "status": 403,
@@ -36,13 +46,14 @@ def login():
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
     """Logout method"""
-    logout_user()
+    if "token" in session:
+        session.pop("token")
     return jsonify({"message": "Logged out Kean Concierge API"})
 
 @app.route("/search", methods=["GET", "POST"])
-@login_required
 def catalog_search():
     """Searches Elasticsearch Index of BF 2.0 RDF for Kean"""
+    token = request.form.get("token")
     query = request.form.get('query')
     search_results = []
     return jsonify({"message": "Searched on {}".format(query),
