@@ -3,9 +3,9 @@ version: "2.0"
 services:
 
   bibcat:
-    image: .
+    build: .
     ports:
-      - "5000"
+      - 5000
     volumes:
       - instance:/opt/kean-concierge/instance 
 
@@ -14,37 +14,16 @@ services:
     ports:
       - "9200"
     environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
+#      - cluster.name=docker-clusteri
+#      - bootstrap.memory_lock=true
       - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - esdata:/usr/share/elasticsearch/data
 
-  semanticServer:
-    image: jermnelson/semantic-server-core:dev
-    ports:
-      - "8080"
-      - "9999"
-    volumes:
-      - fedora:/opt/fedora/
-      - triplestore:/opt/blazegraph
-  
-
-  web:
-    build:
-      context: .
-      dockerfile: DockerfileNginx
-    ports:
-      - 80:80
-      - 443:443
-  
+ 
 volumes:
   esdata:
     driver: local
-  fedora:
-    driver: local
   instance:
-    driver: local
-  triplestore:
     driver: local
