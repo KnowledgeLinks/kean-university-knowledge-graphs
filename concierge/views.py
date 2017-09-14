@@ -1,5 +1,6 @@
 __author__ = "Jeremy Nelson"
 
+import logging
 import jwt
 from . import app
 from flask import abort, jsonify
@@ -12,12 +13,16 @@ server = Server(app.config.get('LDAP_HOST'),
 
 def login_required(f):
     def decorator(*args, **kwargs):
-        token = kwargs.get("token")
+        token = request.form.get('token')
+        logging.info("Token is {}".format(token))
         if token is None:
             abort(401)
-        user_info = jwt.decode(token, 
-                               app.config.get("SECRET_KEY"),
-                               algorithm='HS256')
+        try:
+            user_info = jwt.decode(token, 
+                                   app.config.get("SECRET_KEY"),
+                                   algorithm='HS256')
+        except jwt.exceptions.DecodeError:
+            abort(401)
         conn = Connection(server, 
                           app.config.get('LDAP_STUDENT_DN').format(
                               user_info.get("username")),
@@ -33,6 +38,10 @@ def login_required(f):
             return abort(401)
     return decorator
         
+@app.errorhandler(401)
+def bad_authentication(e):
+    return jsonify({"status": 401,
+                    "message": "Invalid authentication"}), 401
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -57,11 +66,11 @@ def login():
     if conn.bind() is True:
         token = jwt.encode({"username": username, 
                             "password": password},
-                           app.config.SECRET_KEY,
+                           app.config.get('SECRET_KEY'),
                            algorithm='HS256')
         session['token'] = token
         return jsonify({"message": "Logged in".format(username),
-                        "token": token})
+                        "token": token.decode()})
     else:
         failed_authenticate = jsonify({
             "status": 403,

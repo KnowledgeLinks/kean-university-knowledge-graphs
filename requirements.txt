@@ -1,4 +1,5 @@
 Flask
 bibcat
 ldap3
-jwt
+PyJWT
+gunicorn
