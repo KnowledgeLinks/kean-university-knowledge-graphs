@@ -2,14 +2,13 @@ version: "2.0"
 
 services:
 
+
   bibcat:
     build: 
       context: ./
       dockerfile: ./bin/containers/Dockerfile
     ports:
       - 5000
-    volumes:
-      - instance:/opt/kean-concierge/instance 
 
   search:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
@@ -18,11 +17,14 @@ services:
     environment:
       - xpack.security.enabled=false
     volumes:
-      - esdata:/usr/share/elasticsearch/data
+      - "/opt/kean-concierge/elasticsearch:/usr/share/elasticsearch/data"
 
- 
-volumes:
-  esdata:
-    driver: local
-  instance:
-    driver: local
+  web:
+    build:
+      context: ./
+      dockerfile: ./bin/containers/DockerfileNginx
+    links:
+     - bibcat:bibcat
+    ports:
+     - 80:80
+     - 443:443
