@@ -2,6 +2,7 @@ __author__ = "Jeremy Nelson"
 
 import jwt
 from . import app
+from .es_views import get_lookup_list
 from flask import abort, jsonify
 from flask import current_app, request, session
 from ldap3 import Server, Connection, ALL
@@ -97,7 +98,10 @@ def catalog_search():
     else:
         token = request.args.get("token")
         query = request.args.get("query")
-    search_results = []
+
+    search_results = get_lookup_list("catalog", 
+                                     "work", 
+                                    term=query)
     return jsonify({"message": "Success",
                     "query": query,
                     "results": search_results})
@@ -105,6 +109,7 @@ def catalog_search():
 @app.route("/feed", methods=["GET"])
 @login_required
 def news_feed():
+    return jsonify({"message": "News Feed"})
     
 
 @app.route("/")

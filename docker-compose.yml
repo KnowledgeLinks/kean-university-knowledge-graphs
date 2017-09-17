@@ -13,11 +13,11 @@ services:
   search:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
     ports:
-      - "9200"
+      - 9200:9200
     environment:
       - xpack.security.enabled=false
     volumes:
-      - "/opt/kean-concierge/elasticsearch:/usr/share/elasticsearch/data"
+      - "/Users/jeremynelson/2017/tmp/eskean:/usr/share/elasticsearch/data"
 
   web:
     build:
