@@ -32,7 +32,7 @@ def __auth__(user):
 
 
 def login_required(f):
-    def decorator(*args, **kwargs):
+    def __decorator__(*args, **kwargs):
         token = request.form.get('token')
         if token is None:
             abort(400)
@@ -47,7 +47,7 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             return abort(403)
-    return decorator
+    return __decorator__
        
 @app.errorhandler(400)
 def bad_request(e):
