@@ -8,4 +8,4 @@ COPY instance $HOME/instance
 COPY requirements.txt $HOME
 RUN cd $HOME && pip install -r requirements.txt
 WORKDIR $HOME
-CMD ["nohup", "gunicorn", "-b", "0.0.0.0:80", "concierge:app"]
+CMD ["nohup", "gunicorn", "-b", "0.0.0.0:5000", "concierge:app"]
