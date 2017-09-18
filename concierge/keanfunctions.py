@@ -15,9 +15,8 @@ import pprint
 from elasticsearch import Elasticsearch, helpers
 
 MODULE_NAME = "{0}.{1}".format( 
-        (os.path.basename(os.path.split(inspect.stack()[0][1])[0]),
-         os.path.basename(inspect.stack()[0][1])))
-
+        os.path.basename(os.path.split(inspect.stack()[0][1])[0]),
+        os.path.basename(inspect.stack()[0][1]))
 
 pp = pprint
 
