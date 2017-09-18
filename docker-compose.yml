@@ -11,7 +11,7 @@ services:
       - 5000:5000
 
   search:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+    image: elasticsearch/latest
     ports:
       - 9200:9200
     environment:
