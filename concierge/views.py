@@ -1,5 +1,6 @@
 __author__ = "Jeremy Nelson"
 
+from functools import wraps
 import jwt
 from . import app
 from .es_views import get_lookup_list
@@ -31,7 +32,8 @@ def __auth__(user):
     return conn.bind()
 
 
-def login_required(f):
+def kean_required(f):
+    @wraps(f)
     def __decorator__(*args, **kwargs):
         token = request.form.get('token')
         if token is None:
@@ -89,7 +91,7 @@ def login():
         return failed_authenticate
 
 @app.route("/search", methods=["GET", "POST"])
-@login_required
+@kean_required
 def catalog_search():
     """Searches Elasticsearch Index of BF 2.0 RDF for Kean"""
     if request.method.startswith("POST"):
@@ -107,7 +109,7 @@ def catalog_search():
                     "results": search_results})
 
 @app.route("/feed", methods=["GET"])
-@login_required
+@kean_required
 def news_feed():
     return jsonify({"message": "News Feed"})
     

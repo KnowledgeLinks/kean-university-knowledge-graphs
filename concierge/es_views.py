@@ -7,7 +7,7 @@ import json
 import requests
 import cgi
 import pdb
-from flask import Flask, Blueprint, jsonify, render_template, \
+from flask import jsonify, render_template, \
                   Response, request, current_app
 
 from .keanfunctions import EsBase, sample_data_map, sample_data_convert
