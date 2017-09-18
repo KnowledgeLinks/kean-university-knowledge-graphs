@@ -3,3 +3,4 @@ bibcat
 ldap3
 PyJWT
 gunicorn
+elasticsearch
