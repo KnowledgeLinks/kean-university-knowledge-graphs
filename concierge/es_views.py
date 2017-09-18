@@ -8,16 +8,10 @@ import requests
 import cgi
 import pdb
 from flask import Flask, Blueprint, jsonify, render_template, \
-                  Response, request
+                  Response, request, current_app
 
 from .keanfunctions import EsBase, sample_data_map, sample_data_convert
     
-base_site = Blueprint("base_site", __name__,
-                       template_folder="app")
-base_site.config = {}
-
-sample_data = sample_data_map()
-
 def html_sample_data(path, data):
     odd = lambda i : 'even_row' if (i % 2 == 0) else 'odd_row'
     html = """
@@ -42,10 +36,9 @@ def html_sample_data(path, data):
     # print(html)
     return html
 
-@base_site.route("/")
 def api_instructions():
     
-
+    sample_data = sample_data_map(current_app.get("ELASTICSEARCH_URL"))
     warning = {"Routes": {
                     "/api/list/<es_index>/<doc_type>": get_lookup_list.__doc__}}
     html = """
@@ -65,7 +58,7 @@ def api_instructions():
         html += html_sample_data(path, data)
     return "<body style='font-family: monospace;'>%s</body>" % html
 
-@base_site.route("/api/search/<es_index>/<doc_type>")
+#@base_site.route("/api/search/<es_index>/<doc_type>")
 def get_lookup_list(es_index, doc_type, **kwargs):
     ''' Returns search results based on relevancy or an ordered list of 
     items.
@@ -145,9 +138,9 @@ def get_lookup_list(es_index, doc_type, **kwargs):
     else:
         return result
 
-@base_site.route("/api/item/<es_index>/<doc_type>")
-@base_site.route("/api/item/<es_index>/<doc_type>/")
-@base_site.route("/api/item/<es_index>/<doc_type>/<id>")
+#@base_site.route("/api/item/<es_index>/<doc_type>")
+#@base_site.route("/api/item/<es_index>/<doc_type>/")
+#@base_site.route("/api/item/<es_index>/<doc_type>/<id>")
 def get_lookup_item(es_index, doc_type, id=None, **kwargs):
     """ Returns a single item from the spedified index and doc_type
     

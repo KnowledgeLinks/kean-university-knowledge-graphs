@@ -1,6 +1,7 @@
 ''' Base class for reading and pushing to eslasticsearch'''
     
 __author__="Mike Stabile, Jeremy Nelson"
+
 import sys
 import os
 import inspect
@@ -13,24 +14,21 @@ import json
 import pprint
 from elasticsearch import Elasticsearch, helpers
 
-MODULE_NAME = "%s.%s" % \
+MODULE_NAME = "{0}.{1}".format( 
         (os.path.basename(os.path.split(inspect.stack()[0][1])[0]),
-         os.path.basename(inspect.stack()[0][1]))
+         os.path.basename(inspect.stack()[0][1])))
 
 
 pp = pprint
 
-MAPPINGS = json.loads(requests.get('http://localhost:9200/_mapping').text)
-
-
 class EsBase():
     ''' Base elasticsearch rdfframework class for common es operations'''
         
-    ln = "%s:EsBase" % MODULE_NAME
+    ln = "{}:EsBase".format(MODULE_NAME)
     log_level = logging.CRITICAL
         
     def __init__(self, **kwargs):
-        self.es_url = kwargs.get('es_url', 'http://localhost:9200')
+        self.es_url = kwargs.get('es_url')
         self.es = kwargs.get("es",Elasticsearch([self.es_url]))
         self.op_type = kwargs.get("op_type", "index")
         self.es_index = kwargs.get("es_index")
@@ -487,9 +485,9 @@ def make_list(value):
         value = [value]
     return value
 
-def mapping_ref():
+def mapping_ref(es_url):
     es_mappings = \
-            json.loads(requests.get('http://localhost:9200/_mapping').text)
+            json.loads(requests.get('{0}/_mapping'.format(es_url)).text)
     es_mappings = {"_".join(key.split("_")[:-1]): value['mappings'] \
                    for key, value in es_mappings.items()}
 
@@ -560,14 +558,12 @@ def sample_data_convert(data, es_index, doc_type):
     conv_data.sort(key=lambda tup: es_field_sort(tup[0]))
     return conv_data
 
-MAPS = mapping_ref()
+def sample_data_map(es_url):
 
-def sample_data_map():
-
-    maps = MAPS
+    maps = mapping_ref(es_url)
     rtn_obj = {}
     for path, mapping in maps.items():
-        url = "/".join(['http://localhost:9200', path, '_search'])
+        url = "/".join([es_url, path, '_search'])
         sample_data = json.loads(requests.get(url).text)
         sample_data = sample_data['hits']['hits'][0]['_source']
         conv_data = key_data_map(sample_data, mapping)
