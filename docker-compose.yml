@@ -17,7 +17,7 @@ services:
     environment:
       - xpack.security.enabled=false
     volumes:
-      - "/Users/jeremynelson/2017/tmp/eskean:/usr/share/elasticsearch/data"
+      - "/opt/kean-concierge/kean-app/search-index/eskean:/usr/share/elasticsearch/data"
 
   web:
     build:
