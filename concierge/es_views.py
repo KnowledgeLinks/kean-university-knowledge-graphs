@@ -118,7 +118,8 @@ def get_lookup_list(es_index, doc_type, **kwargs):
     size = kwargs.get("size", request.args.get("size",10))
     from_ = kwargs.get("from", request.args.get("from"))
     highlight = kwargs.get("highlight", request.args.get("highlight", False))
-    search = EsBase(es_index=es_index)
+    search = EsBase(es_url=current_app.config.get("ELASTICSEARCH_URL",
+        es_index=es_index)
     result = search.get_list(doc_type=doc_type,
                              fields=fields,
                              search_flds=search_flds,
@@ -171,7 +172,9 @@ def get_lookup_item(es_index, doc_type, id=None, **kwargs):
     else:
         item_id = kwargs.get("id", request.args.get("id"))     
 
-    search = EsBase(es_index=es_index, doc_type=doc_type)
+    search = EsBase(es_url=current_app.config.get("ELASTICSEARCH_URL",
+        es_index=es_index, 
+        doc_type=doc_type)
     result = search.get_doc(id_field=id_field,
                             item_id=item_id)
 
