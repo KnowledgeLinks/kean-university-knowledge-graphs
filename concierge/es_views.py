@@ -172,7 +172,7 @@ def get_lookup_item(es_index, doc_type, id=None, **kwargs):
     else:
         item_id = kwargs.get("id", request.args.get("id"))     
 
-    search = EsBase(es_url=current_app.config.get("ELASTICSEARCH_URL",
+    search = EsBase(es_url=current_app.config.get("ELASTICSEARCH_URL"),
         es_index=es_index, 
         doc_type=doc_type)
     result = search.get_doc(id_field=id_field,
