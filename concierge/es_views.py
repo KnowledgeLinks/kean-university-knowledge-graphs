@@ -38,7 +38,8 @@ def html_sample_data(path, data):
 
 def api_instructions():
     
-    sample_data = sample_data_map(current_app.get("ELASTICSEARCH_URL"))
+    sample_data = sample_data_map(
+        current_app.config.get("ELASTICSEARCH_URL"))
     warning = {"Routes": {
                     "/api/list/<es_index>/<doc_type>": get_lookup_list.__doc__}}
     html = """
