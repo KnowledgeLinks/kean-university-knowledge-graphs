@@ -3,7 +3,7 @@ __author__ = "Jeremy Nelson"
 from functools import wraps
 import jwt
 from . import app
-from .es_views import get_lookup_list
+from .es_views import api_instructions, get_lookup_list
 from flask import abort, jsonify
 from flask import current_app, request, session
 from ldap3 import Server, Connection, ALL
@@ -62,6 +62,9 @@ def unauthorized(e):
                     "message": "Invalid authentication"}), 401
 
 
+@app.route("/doc")
+def doc_home():
+    return api_instructions()
 
 @app.route("/login", methods=['POST'])
 def login():
