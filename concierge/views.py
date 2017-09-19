@@ -66,7 +66,7 @@ def unauthorized(e):
 def doc_home():
     return api_instructions()
 
-@app.route("/item/<work_id>", methods=["GET", "POST"])
+@app.route("/work/<work_id>", methods=["GET", "POST"])
 @kean_required
 def work_detail(work_id=None):
     """Returns detailed JSON for an individual ES document"""
