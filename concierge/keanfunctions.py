@@ -562,7 +562,7 @@ def sample_data_map(es_url):
     maps = mapping_ref(es_url)
     rtn_obj = {}
     for path, mapping in maps.items():
-        url = "/".join([es_url, path, '_search'])
+        url = "/".join(["{}:9200".format(es_url), path, '_search'])
         sample_data = json.loads(requests.get(url).text)
         sample_data = sample_data['hits']['hits'][0]['_source']
         conv_data = key_data_map(sample_data, mapping)
