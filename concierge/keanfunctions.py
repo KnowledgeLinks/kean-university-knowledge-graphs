@@ -486,7 +486,7 @@ def make_list(value):
 
 def mapping_ref(es_url):
     es_mappings = \
-            json.loads(requests.get('http://{0}:9200/_mapping'.format(es_url)).text)
+            json.loads(requests.get('{0}:9200/_mapping'.format(es_url)).text)
     es_mappings = {"_".join(key.split("_")[:-1]): value['mappings'] \
                    for key, value in es_mappings.items()}
 
