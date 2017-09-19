@@ -3,7 +3,7 @@ __author__ = "Jeremy Nelson"
 from functools import wraps
 import jwt
 from . import app
-from .es_views import api_instructions, get_lookup_list
+from .es_views import api_instructions, get_lookup_list, get_lookup_item
 from flask import abort, jsonify
 from flask import current_app, request, session
 from ldap3 import Server, Connection, ALL
@@ -65,6 +65,20 @@ def unauthorized(e):
 @app.route("/doc")
 def doc_home():
     return api_instructions()
+
+@app.route("/item/<work_id>", methods=["GET", "POST"])
+@kean_required
+def work_detail(work_id=None):
+    """Returns detailed JSON for an individual ES document"""
+    if work_id is None:
+        if request.method.startswith("POST"):
+            work_id = request.form.get('id')
+        else:
+            work_id = request.args.get('id')
+    detail_info = get_lookup_item("catalog",
+                                  "work",
+                                  id=work_id)
+    return detail_info
 
 @app.route("/login", methods=['POST'])
 def login():

@@ -276,8 +276,9 @@ class EsBase():
         else:
             dsl['query'] = {'bool':{}}
         if filter_value:
+            maps = mapping_ref(self.es_url)
             path = '%s/%s' % (self.es_index, doc_type)
-            filter_types = make_list(MAPS[path].get(filter_field))
+            filter_types = make_list(maps[path].get(filter_field))
             fld_filterable = \
                     len(set(['keyword','lower']).intersection(set(filter_types)))\
                      > 0
@@ -546,12 +547,13 @@ def key_data_map(source, mapping, parent=[]):
         # pdb.set_trace()
     return rtn_obj
 
-def sample_data_convert(data, es_index, doc_type):
+def sample_data_convert(es_url, data, es_index, doc_type):
+    maps = mapping_ref(es_url)
     if data.get('hits'):
         new_data = data['hits']['hits'][0]['_source']
     elif data.get('_source'):
         new_data = data['_source']
-    conv_data = key_data_map(new_data, MAPS["%s/%s" % (es_index, doc_type)])
+    conv_data = key_data_map(new_data, maps["%s/%s" % (es_index, doc_type)])
     conv_data = [(key, str(value['mapping']), str(value['data']),) \
                  for key, value in conv_data.items()]
     conv_data.sort(key=lambda tup: es_field_sort(tup[0]))

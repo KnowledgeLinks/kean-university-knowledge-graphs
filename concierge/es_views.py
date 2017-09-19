@@ -181,8 +181,14 @@ def get_lookup_item(es_index, doc_type, id=None, **kwargs):
 
     if request.full_path.startswith("/api/"):
         if output == 'sample':
-            return html_sample_data("/".join([es_index, doc_type, id]), 
-                    sample_data_convert(result, es_index, doc_type))
+            return html_sample_data(
+                "/".join(["{}:9200".format(
+                             current_app.config.get("ELASTICSEARCH_URL")),
+                          es_index, 
+                          doc_type, 
+                          id]), 
+                sample_data_convert(current_app.config.get("ELASTICSEARCH_URL"),
+                    result, es_index, doc_type))
             
         return jsonify(result)
     else:
