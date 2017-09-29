@@ -12,6 +12,13 @@ server = Server(app.config.get('LDAP_HOST'),
                 get_info=ALL, 
                 use_ssl=True)
 
+COLLEAGUE_LOGIN_URL = "{}/session/login".format(
+    app.config.get("COLLEAGUE_BASE_URL"))
+COLLEAGUE_PROGRAM_TMPLATE = "{}/students/{{}}/programs".format(
+    app.config.get("COLLEAGUE_BASE_URL"))
+
+
+
 def __auth__(user):
     """Internal function takes a user dict and
     returns a dictionary with a token or raises a 401
@@ -30,6 +37,34 @@ def __auth__(user):
              app.config.get('LDAP_STAFF_DN').format(username),
              password=password)
     return conn.bind()
+        
+
+def __program_info__(conn):
+    # Retrieve major information from Colleague API
+    has_employee_number = conn.search(
+        app.config.get("LDAP_SEARCH_BASE"),
+        "(uid={0})".format(user.get("username"))
+        attributes=["employeeNumber"])
+     if has_employee_number is True:
+        employee_number = conn.entries[0].get("employeeNumber")
+        colleague_user = {"UserId": app.config.get("COLLEAGUE_USER_ID"),
+                          "Password": app.config.get("COLLEAGUE_USER_PWD")}
+        colleague_login = requests.post(
+             COLLEAGUE_LOGIN_URL,
+             data=colleague_user)
+        if colleague_login.status_code != 200:
+             raise ValueError("Did not login successfully to Colleague")
+        token = colleague_login.text
+        # Now search Colleague API for program 
+        program_info_url = COLLEAGUE_PROGRAM_TMPLATE.format(
+             employee_number)
+        program_result = requests.get(program_info_url,
+             headers={"X-CustomCredentials": token.text,
+                      "Accept": "application/vnd.ellucian.v1+json",
+                       "Content-Type": "application/json"})
+         return program_result.json()
+            
+            
 
 
 def kean_required(f):
@@ -45,10 +80,12 @@ def kean_required(f):
         except jwt.exceptions.DecodeError:
             abort(403)
         is_valid = __auth__(user_info) 
-        if is_valid is True:
-            return f(*args, **kwargs)
-        else:
+        if is_valid is False:
             return abort(403)
+            
+        else:
+
+            return f(*args, **kwargs)
     return __decorator__
        
 @app.errorhandler(400)
@@ -98,8 +135,10 @@ def login():
         token = jwt.encode(user_info,
                            app.config.get('SECRET_KEY'),
                            algorithm='HS256')
+        
         return jsonify({"message": "Logged in".format(username),
-                        "token": token.decode()})
+                        "token": token.decode(),
+                        "major": __program_info__(conn))
     else:
         failed_authenticate = jsonify({
             "status": 403,
