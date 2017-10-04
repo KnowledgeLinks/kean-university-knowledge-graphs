@@ -53,7 +53,7 @@ def __program_info__(conn, user_info):
         attributes=["employeeNumber"])
     program_name = "Unknown"
     if has_employee_number is True:
-        employee_number = conn.entries[0].get("employeeNumber")
+        employee_number = conn.entries[0].employeeNumber.value
         colleague_user = {"UserId": app.config.get("COLLEAGUE_USER_ID"),
                           "Password": app.config.get("COLLEAGUE_USER_PWD")}
         colleague_login = requests.post(
