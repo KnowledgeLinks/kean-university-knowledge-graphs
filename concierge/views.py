@@ -1,5 +1,8 @@
 __author__ = "Jeremy Nelson"
 
+import json
+import os
+
 from functools import wraps
 import jwt
 from . import app
@@ -17,6 +20,9 @@ COLLEAGUE_LOGIN_URL = "{}/session/login".format(
 COLLEAGUE_PROGRAM_TMPLATE = "{}/students/{{}}/programs".format(
     app.config.get("COLLEAGUE_BASE_URL"))
 
+CONCIERGE_BASE = os.path.abspath(os.path.dirname(__file__)
+with open(os.path.join(CONCIERGE_BASE, "static/js/programs.json")) as fo:
+    PROGRAMS = json.load(fo)
 
 
 def __auth__(user):
@@ -36,7 +42,7 @@ def __auth__(user):
          conn = Connection(server, 
              app.config.get('LDAP_STAFF_DN').format(username),
              password=password)
-    return conn.bind()
+    return conn
         
 
 def __program_info__(conn):
@@ -59,10 +65,15 @@ def __program_info__(conn):
         program_info_url = COLLEAGUE_PROGRAM_TMPLATE.format(
              employee_number)
         program_result = requests.get(program_info_url,
-             headers={"X-CustomCredentials": token.text,
-                      "Accept": "application/vnd.ellucian.v1+json",
-                       "Content-Type": "application/json"})
-         return program_result.json()
+            headers={"X-CustomCredentials": token.text,
+                     "Accept": "application/vnd.ellucian.v1+json",
+                     "Content-Type": "application/json"})
+        if program_result.status_code < 400:
+            program_code = program_result.json()[0].get("ProgramCode")
+            program_name = PROGRAMS.get(program_code)
+        else:
+            program_name = "Unknown"
+        return program_name
             
             
 
@@ -79,12 +90,10 @@ def kean_required(f):
                                    algorithm='HS256')
         except jwt.exceptions.DecodeError:
             abort(403)
-        is_valid = __auth__(user_info) 
-        if is_valid is False:
+        connection = __auth__(user_info) 
+        if connection.bind() is False:
             return abort(403)
-            
         else:
-
             return f(*args, **kwargs)
     return __decorator__
        
@@ -130,15 +139,15 @@ def login():
         return error_response
     user_info = {"username": username,
                  "password": password}
-    is_valid = __auth__(user_info)
-    if is_valid is True:
+    connection = __auth__(user_info)
+    if connection.bind() is True:
         token = jwt.encode(user_info,
                            app.config.get('SECRET_KEY'),
                            algorithm='HS256')
         
         return jsonify({"message": "Logged in".format(username),
                         "token": token.decode(),
-                        "major": __program_info__(conn))
+                        "program": __program_info__(connection))
     else:
         failed_authenticate = jsonify({
             "status": 403,
