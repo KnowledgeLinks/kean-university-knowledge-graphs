@@ -40,7 +40,7 @@ def __auth__(user):
     if conn.bind() is False:
          # Tries to authenticate as staff
          conn = Connection(server, 
-             app.config.get('LDAP_STAFF_DN').format(username),
+             app.config.get('LDAP_STAFF_DN').format(user.get("username")),
              password=password)
     return conn
         
