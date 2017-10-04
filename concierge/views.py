@@ -41,7 +41,7 @@ def __auth__(user):
          # Tries to authenticate as staff
          conn = Connection(server, 
              app.config.get('LDAP_STAFF_DN').format(user.get("username")),
-             password=password)
+             password=user.get('password'))
     return conn
         
 
