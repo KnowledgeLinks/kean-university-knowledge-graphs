@@ -20,7 +20,7 @@ COLLEAGUE_LOGIN_URL = "{}/session/login".format(
 COLLEAGUE_PROGRAM_TMPLATE = "{}/students/{{}}/programs".format(
     app.config.get("COLLEAGUE_BASE_URL"))
 
-CONCIERGE_BASE = os.path.abspath(os.path.dirname(__file__)
+CONCIERGE_BASE = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(CONCIERGE_BASE, "static/js/programs.json")) as fo:
     PROGRAMS = json.load(fo)
 
@@ -49,9 +49,9 @@ def __program_info__(conn):
     # Retrieve major information from Colleague API
     has_employee_number = conn.search(
         app.config.get("LDAP_SEARCH_BASE"),
-        "(uid={0})".format(user.get("username"))
+        "(uid={0})".format(user.get("username")),
         attributes=["employeeNumber"])
-     if has_employee_number is True:
+    if has_employee_number is True:
         employee_number = conn.entries[0].get("employeeNumber")
         colleague_user = {"UserId": app.config.get("COLLEAGUE_USER_ID"),
                           "Password": app.config.get("COLLEAGUE_USER_PWD")}
@@ -147,7 +147,7 @@ def login():
         
         return jsonify({"message": "Logged in".format(username),
                         "token": token.decode(),
-                        "program": __program_info__(connection))
+                        "program": __program_info__(connection)})
     else:
         failed_authenticate = jsonify({
             "status": 403,
