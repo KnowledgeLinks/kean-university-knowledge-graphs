@@ -5,6 +5,8 @@ import os
 
 from functools import wraps
 import jwt
+import requests
+
 from . import app
 from .es_views import api_instructions, get_lookup_list, get_lookup_item
 from flask import abort, jsonify
