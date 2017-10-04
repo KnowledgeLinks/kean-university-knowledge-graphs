@@ -162,13 +162,18 @@ def catalog_search():
     if request.method.startswith("POST"):
         token = request.form.get("token")
         query = request.form.get('query')
+        size = request.form.get("size", 10)
+        offset = request.form.get("offset", 0)
     else:
         token = request.args.get("token")
         query = request.args.get("query")
-
+        size = request.form.get("size", 10)
+        offset = request.args.get("offset", 0)
     search_results = get_lookup_list("catalog", 
                                      "work", 
-                                    term=query)
+                                     term=query,
+                                     size=size,
+                                     offset=offset)
     return jsonify({"message": "Success",
                     "query": query,
                     "results": search_results})

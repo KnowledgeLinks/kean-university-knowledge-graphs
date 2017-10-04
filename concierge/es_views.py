@@ -67,7 +67,7 @@ def get_lookup_list(es_index, doc_type, **kwargs):
     Request Params:
         term:       (optional)the search keywords
         size:       (default=10) the number of results to return
-        from:       (optional) the starting point in the result set. Used for
+        offset:     (optional) the starting point in the result set. Used for
                     pagination
         method:     (optional)['serach','list']
                         search: (default) will return results based on relevance
@@ -117,7 +117,7 @@ def get_lookup_list(es_index, doc_type, **kwargs):
     calc = kwargs.get("calc", request.args.get("calc"))
     method = kwargs.get("method", request.args.get("method","search"))
     size = kwargs.get("size", request.args.get("size",10))
-    from_ = kwargs.get("from", request.args.get("from"))
+    from_ = kwargs.get("from", request.args.get("offset"))
     highlight = kwargs.get("highlight", request.args.get("highlight", False))
     search = EsBase(es_url=current_app.config.get("ELASTICSEARCH_URL"),
         es_index=es_index)
