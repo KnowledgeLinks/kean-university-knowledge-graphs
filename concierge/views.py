@@ -45,12 +45,13 @@ def __auth__(user):
     return conn
         
 
-def __program_info__(conn):
+def __program_info__(conn, user_info):
     # Retrieve major information from Colleague API
     has_employee_number = conn.search(
         app.config.get("LDAP_SEARCH_BASE"),
-        "(uid={0})".format(user.get("username")),
+        "(uid={0})".format(user_info.get("username")),
         attributes=["employeeNumber"])
+    program_name = "Unknown"
     if has_employee_number is True:
         employee_number = conn.entries[0].get("employeeNumber")
         colleague_user = {"UserId": app.config.get("COLLEAGUE_USER_ID"),
@@ -71,11 +72,8 @@ def __program_info__(conn):
         if program_result.status_code < 400:
             program_code = program_result.json()[0].get("ProgramCode")
             program_name = PROGRAMS.get(program_code)
-        else:
-            program_name = "Unknown"
-        return program_name
-            
-            
+    return program_name
+
 
 
 def kean_required(f):
@@ -147,7 +145,7 @@ def login():
         
         return jsonify({"message": "Logged in".format(username),
                         "token": token.decode(),
-                        "program": __program_info__(connection)})
+                        "program": __program_info__(connection, user_info)})
     else:
         failed_authenticate = jsonify({
             "status": 403,
