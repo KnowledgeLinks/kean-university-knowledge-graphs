@@ -68,7 +68,7 @@ def __program_info__(conn, user_info):
         program_info_url = COLLEAGUE_PROGRAM_TMPLATE.format(
              employee_number)
         program_result = requests.get(program_info_url,
-            headers={"X-CustomCredentials": token.text,
+            headers={"X-CustomCredentials": token,
                      "Accept": "application/vnd.ellucian.v1+json",
                      "Content-Type": "application/json"})
         if program_result.status_code < 400:
