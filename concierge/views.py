@@ -72,8 +72,10 @@ def __program_info__(conn, user_info):
                      "Accept": "application/vnd.ellucian.v1+json",
                      "Content-Type": "application/json"})
         if program_result.status_code < 400:
-            program_code = program_result.json()[0].get("ProgramCode")
-            program_name = PROGRAMS.get(program_code)
+            program_info = program_result.json()
+            if len(program_info) > 0:
+                program_code = [0].get("ProgramCode")
+                program_name = PROGRAMS.get(program_code)
     return program_name
 
 
