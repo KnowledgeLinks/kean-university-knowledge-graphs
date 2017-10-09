@@ -74,7 +74,7 @@ def __program_info__(conn, user_info):
         if program_result.status_code < 400:
             program_info = program_result.json()
             if len(program_info) > 0:
-                program_code = [0].get("ProgramCode")
+                program_code = program_info[0].get("ProgramCode")
                 program_name = PROGRAMS.get(program_code)
     return program_name
 
