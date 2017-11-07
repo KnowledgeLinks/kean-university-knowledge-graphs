@@ -148,8 +148,8 @@ def login():
                            algorithm='HS256')
 
         return jsonify({"message": "Logged in".format(username),
-                        "token": token.decode()})
-                        # "program": __program_info__(connection, user_info)})
+                        "token": token.decode(),
+                        "program": __program_info__(connection, user_info)})
     else:
         failed_authenticate = jsonify({
             "status": 403,
