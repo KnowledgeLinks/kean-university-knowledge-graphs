@@ -11,13 +11,13 @@ from flask import jsonify, render_template, \
                   Response, request, current_app
 
 from .keanfunctions import EsBase, sample_data_map, sample_data_convert
-    
+
 def html_sample_data(path, data):
     odd = lambda i : 'even_row' if (i % 2 == 0) else 'odd_row'
     html = """
             <style>
                 .even_row {
-                    background: lightgoldenrodyellow; 
+                    background: lightgoldenrodyellow;
                 }
                 td {
                     padding: 0px 20px 0px 20px
@@ -37,7 +37,7 @@ def html_sample_data(path, data):
     return html
 
 def api_instructions():
-    
+
     sample_data = sample_data_map(
         current_app.config.get("ELASTICSEARCH_URL"))
     warning = {"Routes": {
@@ -61,7 +61,7 @@ def api_instructions():
 
 #@base_site.route("/api/search/<es_index>/<doc_type>")
 def get_lookup_list(es_index, doc_type, **kwargs):
-    ''' Returns search results based on relevancy or an ordered list of 
+    ''' Returns search results based on relevancy or an ordered list of
     items.
 
     Request Params:
@@ -72,22 +72,22 @@ def get_lookup_list(es_index, doc_type, **kwargs):
         method:     (optional)['serach','list']
                         search: (default) will return results based on relevance
                         list: a 'fields' value must be supplied
-        fields:     (optional) a CSV list of fields to return. returns the 
-                    entire document if left blank 
-        search_flds:(optional) a CSV list of fields to search. Higher relevancy 
-                    is placed on these fields. defaults to fields paramater if 
+        fields:     (optional) a CSV list of fields to return. returns the
+                    entire document if left blank
+        search_flds:(optional) a CSV list of fields to search. Higher relevancy
+                    is placed on these fields. defaults to fields paramater if
                     left blank
-        sort_dir:   (optional) the direction to sort the results. 
+        sort_dir:   (optional) the direction to sort the results.
                     ['asc','desc','none']
         sort_flds:  (optional) a CSV list of fields for sorting the results.
                     defaults to 'fields' paramater if supplied
-        filter_val: (optional) value to filter results on ***must supply a 
+        filter_val: (optional) value to filter results on ***must supply a
                     filter_fld value
-        filter_fld: (optional) the field to fileter results on *** used in 
+        filter_fld: (optional) the field to fileter results on *** used in
                     conjunction with 'filter_val'
         calc:       (optional) use '+' field_names and double quotes to add text
                     fld1 +", " + fld2 = "fld1, fld2" *** make sure the string is
-                    encoded for a url i.e. '+' is %2B 
+                    encoded for a url i.e. '+' is %2B
                     The calculated result will be in the '_calc' field
 
     Example Calls:
@@ -108,7 +108,7 @@ def get_lookup_list(es_index, doc_type, **kwargs):
     search_flds = param_list(kwargs.get("search_flds",
                                         request.args.get("search_flds")))
     sort_dir = kwargs.get("", request.args.get("sort_dir"))
-    sort_fields = param_list(kwargs.get("sort_fields", 
+    sort_fields = param_list(kwargs.get("sort_fields",
                              request.args.get("sort_fields")))
     raw = kwargs.get("raw", request.args.get("raw"))
     term = kwargs.get("term", request.args.get("term"))
@@ -134,23 +134,23 @@ def get_lookup_list(es_index, doc_type, **kwargs):
                              filter_value=filter_value,
                              highlight=highlight,
                              calc=calc)
-    
-    if request.full_path.startswith("/api/"):
-        return jsonify(result)
-    else:
-        return result
+
+    # if request.full_path.startswith("/api/"):
+    #     return jsonify(result)
+    # else:
+    return result
 
 #@base_site.route("/api/item/<es_index>/<doc_type>")
 #@base_site.route("/api/item/<es_index>/<doc_type>/")
 #@base_site.route("/api/item/<es_index>/<doc_type>/<id>")
 def get_lookup_item(es_index, doc_type, id=None, **kwargs):
     """ Returns a single item from the spedified index and doc_type
-    
+
     Request Params:
         id: the id value associated with the id_field
         id_field: the field supplying the identifier | default: _id
         output: 'json'(default) or'sample' -> sample provides an html display
-                of data with full field names.  
+                of data with full field names.
 
     Example Calls:
         Call for a document suppling only an 'id':
@@ -160,21 +160,21 @@ def get_lookup_item(es_index, doc_type, id=None, **kwargs):
 
         Call for a document keying on a different field than the id:
             /api/item/[es_index]/[doc_type]?id=0958473827&id_field=bf_hasInstance.bf_identifiedBy.value
-    
+
         Call for a document by 'id' returning with html sample:
             /api/item/[es_index]/[doc_type]/lkajflk5342509daspjfal239?output=sample
     """
-    
+
     output = kwargs.get("output", request.args.get("output", "json"))
 
     id_field = kwargs.get("id_field", request.args.get("id_field", "_id"))
     if id:
         item_id = id
     else:
-        item_id = kwargs.get("id", request.args.get("id"))     
+        item_id = kwargs.get("id", request.args.get("id"))
 
     search = EsBase(es_url=current_app.config.get("ELASTICSEARCH_URL"),
-        es_index=es_index, 
+        es_index=es_index,
         doc_type=doc_type)
     result = search.get_doc(id_field=id_field,
                             item_id=item_id)
@@ -184,23 +184,23 @@ def get_lookup_item(es_index, doc_type, id=None, **kwargs):
             return html_sample_data(
                 "/".join(["{}:9200".format(
                              current_app.config.get("ELASTICSEARCH_URL")),
-                          es_index, 
-                          doc_type, 
-                          id]), 
+                          es_index,
+                          doc_type,
+                          id]),
                 sample_data_convert(current_app.config.get("ELASTICSEARCH_URL"),
                     result, es_index, doc_type))
-            
+
         return jsonify(result)
     else:
         return result
-    
+
 def param_list(param, split_term=","):
     """ Takes a paramater and converts to a list or returns none.
 
     args:
         param: the parmater to change into a list
         split_term: the value to split the parameter on.
-        
+
     returns:
         None: if the param is None
         []: a list of terms
