@@ -13,8 +13,8 @@ from flask import abort, jsonify
 from flask import current_app, request, session
 from ldap3 import Server, Connection, ALL
 
-server = Server(app.config.get('LDAP_HOST'), 
-                get_info=ALL, 
+server = Server(app.config.get('LDAP_HOST'),
+                get_info=ALL,
                 use_ssl=True)
 
 COLLEAGUE_LOGIN_URL = "{}/session/login".format(
@@ -35,17 +35,17 @@ def __auth__(user):
     Args:
         user(dict): User creditials
     """
-    conn = Connection(server, 
+    conn = Connection(server,
                       app.config.get('LDAP_STUDENT_DN').format(
                           user.get("username")),
                       password=user.get("password"))
     if conn.bind() is False:
          # Tries to authenticate as staff
-         conn = Connection(server, 
+         conn = Connection(server,
              app.config.get('LDAP_STAFF_DN').format(user.get("username")),
              password=user.get('password'))
     return conn
-        
+
 
 def __program_info__(conn, user_info):
     # Retrieve major information from Colleague API
@@ -64,7 +64,7 @@ def __program_info__(conn, user_info):
         if colleague_login.status_code != 200:
              raise ValueError("Did not login successfully to Colleague")
         token = colleague_login.text
-        # Now search Colleague API for program 
+        # Now search Colleague API for program
         program_info_url = COLLEAGUE_PROGRAM_TMPLATE.format(
              employee_number)
         program_result = requests.get(program_info_url,
@@ -87,23 +87,23 @@ def kean_required(f):
         if token is None:
             abort(400)
         try:
-            user_info = jwt.decode(token, 
+            user_info = jwt.decode(token,
                                    app.config.get("SECRET_KEY"),
                                    algorithm='HS256')
         except jwt.exceptions.DecodeError:
             abort(403)
-        connection = __auth__(user_info) 
+        connection = __auth__(user_info)
         if connection.bind() is False:
             return abort(403)
         else:
             return f(*args, **kwargs)
     return __decorator__
-       
+
 @app.errorhandler(400)
 def bad_request(e):
     return jsonify({"status": 400,
                     "message": "Bad Request; missing parameters"}), 400
- 
+
 @app.errorhandler(401)
 def unauthorized(e):
     return jsonify({"status": 401,
@@ -146,7 +146,7 @@ def login():
         token = jwt.encode(user_info,
                            app.config.get('SECRET_KEY'),
                            algorithm='HS256')
-        
+
         return jsonify({"message": "Logged in".format(username),
                         "token": token.decode(),
                         "program": __program_info__(connection, user_info)})
@@ -156,9 +156,8 @@ def login():
             "message": "failed authentication"})
         failed_authenticate.status_code = 403
         return failed_authenticate
-
+# @kean_required
 @app.route("/search", methods=["GET", "POST"])
-@kean_required
 def catalog_search():
     """Searches Elasticsearch Index of BF 2.0 RDF for Kean"""
     if request.method.startswith("POST"):
@@ -171,8 +170,8 @@ def catalog_search():
         query = request.args.get("query")
         size = request.form.get("size", 10)
         offset = request.args.get("offset", 0)
-    search_results = get_lookup_list("catalog", 
-                                     "work", 
+    search_results = get_lookup_list("catalog",
+                                     "work",
                                      term=query,
                                      size=size,
                                      offset=offset)
@@ -184,7 +183,7 @@ def catalog_search():
 @kean_required
 def news_feed():
     return jsonify({"message": "News Feed"})
-    
+
 
 @app.route("/")
 def home():
