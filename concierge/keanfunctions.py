@@ -273,11 +273,16 @@ class EsBase():
             #         ]
             #     }
             # }
+            # dsl['query'] = {
+            #                 "query_string" : {
+            #                     "query": search_term,
+            #                     "analyzer": "default",
+            #                     "analyze_wildcard": True
+            #                 }
+            #             }
             dsl['query'] = {
                             "query_string" : {
-                                "query": search_term,
-                                "analyzer": "default",
-                                "analyze_wildcard": True
+                                "query": search_term
                             }
                         }
         else:
