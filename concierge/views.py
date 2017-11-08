@@ -46,16 +46,34 @@ def __auth__(user):
              password=user.get('password'))
     return conn
 
+def __get_employee_number__(user_info, conn=None):
+    """ searches LDAP for the employee number
 
-def __program_info__(conn, user_info):
-    # Retrieve major information from Colleague API
+    Args:
+        conn: the LDAP connection instance
+        user_info: the username and password
+    """
+    if not conn:
+        conn = __auth__(user_info)
     has_employee_number = conn.search(
         app.config.get("LDAP_SEARCH_BASE"),
         "(uid={0})".format(user_info.get("username")),
         attributes=["employeeNumber"])
     program_name = "Unknown"
     if has_employee_number is True:
-        employee_number = conn.entries[0].employeeNumber.value
+        session['employee_number'] = conn.entries[0].employeeNumber.value
+        return conn.entries[0].employeeNumber.value
+    return None
+
+def __program_info__(user_info):
+    # Retrieve major information from Colleague API
+    program_name = "Unknown"
+    if session.get('program_name'):
+      return session['program_name']
+    employee_number = session.get("employee_number")
+    if not employee_number:
+        employee_number = __get_employee_number__(user_info)
+    if employee_number:
         colleague_user = {"UserId": app.config.get("COLLEAGUE_USER_ID"),
                           "Password": app.config.get("COLLEAGUE_USER_PWD")}
         colleague_login = requests.post(
@@ -76,9 +94,8 @@ def __program_info__(conn, user_info):
             if len(program_info) > 0:
                 program_code = program_info[0].get("ProgramCode")
                 program_name = PROGRAMS.get(program_code)
+    session['program_name'] = program_name
     return program_name
-
-
 
 def kean_required(f):
     @wraps(f)
@@ -86,6 +103,11 @@ def kean_required(f):
         token = request.form.get('token')
         if token is None:
             abort(400)
+        # if the session token and passed in token match continue
+        if session.get('token') == token:
+            return f(*args, **kwargs)
+        # if sesion info did not work try the LDAP connection
+        session.clear()
         try:
             user_info = jwt.decode(token,
                                    app.config.get("SECRET_KEY"),
@@ -96,6 +118,7 @@ def kean_required(f):
         if connection.bind() is False:
             return abort(403)
         else:
+            session['token'] = token
             return f(*args, **kwargs)
     return __decorator__
 
@@ -131,6 +154,7 @@ def work_detail(work_id=None):
 @app.route("/login", methods=['POST'])
 def login():
     """Login Method """
+    session.clear()
     username = request.form.get("username")
     password = request.form.get("password")
     if username is None or password is None:
@@ -146,18 +170,32 @@ def login():
         token = jwt.encode(user_info,
                            app.config.get('SECRET_KEY'),
                            algorithm='HS256')
-
+        session['token'] = token
+        __get_employee_number__(user_info, connection)
         return jsonify({"message": "Logged in".format(username),
-                        "token": token.decode(),
-                        "program": __program_info__(connection, user_info)})
+                        "token": token.decode()})
+                        #"program": __program_info__(connection, user_info)})
     else:
         failed_authenticate = jsonify({
             "status": 403,
             "message": "failed authentication"})
         failed_authenticate.status_code = 403
         return failed_authenticate
-# @kean_required
+
+@app.route("/program", methods=['POST'])
+@kean_required
+def student_program():
+    token = request.form.get("token")
+    try:
+        user_info = jwt.decode(token,
+                               app.config.get("SECRET_KEY"),
+                               algorithm='HS256')
+    except jwt.exceptions.DecodeError:
+        abort(403)
+    return jsonify({"program": __program_info__(user_info)})
+
 @app.route("/search", methods=["GET", "POST"])
+@kean_required
 def catalog_search():
     """Searches Elasticsearch Index of BF 2.0 RDF for Kean"""
     if request.method.startswith("POST"):
