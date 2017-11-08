@@ -170,7 +170,7 @@ def login():
         token = jwt.encode(user_info,
                            app.config.get('SECRET_KEY'),
                            algorithm='HS256')
-        session['token'] = token
+        session['token'] = token.decode()
         __get_employee_number__(user_info, connection)
         return jsonify({"message": "Logged in".format(username),
                         "token": token.decode()})
