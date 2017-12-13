@@ -192,7 +192,8 @@ def student_program():
                                algorithm='HS256')
     except jwt.exceptions.DecodeError:
         abort(403)
-    return jsonify({"program": __program_info__(user_info)})
+    return jsonify({"program": __program_info__(user_info),
+                    "username": user_info.get('username')})
 
 @app.route("/search", methods=["GET", "POST"])
 @kean_required
